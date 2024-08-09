@@ -109,13 +109,14 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: frontend-build
+          path: builds/frontend
       - name: Download backend-build
         uses: actions/download-artifact@v4
         with:
           name: backend-build
-          path: to-here
+          path: builds/backend
       - name: Display structure of downloaded files
-        run: ls ..
+        run: ls -R builds
       # - name: e2e test - lib ui
       #   run: npm run e2e:lib-ui
       # - name: e2e test - app
