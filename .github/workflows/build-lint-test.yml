@@ -115,6 +115,8 @@ jobs:
         with:
           name: backend-build
           path: builds/backend
+      - name: permission time
+        run: chmod a+x builds/backend/api
       - name: e2e test - d2d
         run: npm run e2e:d2d -- --project chrome
       # - name: e2e test - lib ui
