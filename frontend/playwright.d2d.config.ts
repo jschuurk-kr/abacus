@@ -34,7 +34,7 @@ const config: PlaywrightTestConfig = defineConfig({
         // ../builds/frontend
 
         process.env.CI
-          ? "cd ../builds/backend && ./api --frontend-dist ../frontend --port 8081"
+          ? "cd ../builds/backend && ./api --reset-database --seed-data --frontend-dist ../frontend --port 8081"
           : "cd ../backend/target/debug && ./api --frontend-dist ../../../frontend/dist --port 8081",
       port: 8081,
     },
