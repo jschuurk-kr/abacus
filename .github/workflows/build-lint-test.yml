@@ -95,14 +95,14 @@ jobs:
         working-directory: frontend
     steps:
       - uses: actions/checkout@v4
-      # - name: Setup Node
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: 20
-      # - name: Install dependencies
-      #   run: npm ci
-      # - name: e2e test install
-      #   run: npx playwright install --with-deps
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm ci
+      - name: e2e test install
+        run: npx playwright install --with-deps
       - name: display current GH workspace
         run: echo $GITHUB_WORKSPACE
       - name: Download frontend-build
@@ -115,8 +115,8 @@ jobs:
         with:
           name: backend-build
           path: builds/backend
-      - name: Display structure of downloaded files
-        run: ls -R ../builds
+      - name: e2e test - d2d
+        run: npm run e2e:d2d -- --project chrome
       # - name: e2e test - lib ui
       #   run: npm run e2e:lib-ui
       # - name: e2e test - app

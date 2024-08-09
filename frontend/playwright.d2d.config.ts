@@ -29,10 +29,13 @@ const config: PlaywrightTestConfig = defineConfig({
 
       // this puts the db.sqlite in frontend, so nope
       command:
-        "cd ../backend/target/debug && ./api --frontend-dist ../../../frontend/dist --port 8081",
-      // process.env.CI ?
-      //   "cd ../backend && cargo run -- --reset-database --seed-data --frontend-dist ../frontend/dist --port 8081" :
-      //   "../backend/target/debug/api --frontend-dist dist",
+        // workflow paths
+        // ../builds/backend/api
+        // ../builds/frontend
+
+        process.env.CI
+          ? "cd ../builds/backend && ./api --frontend-dist ../frontend --port 8081"
+          : "cd ../backend/target/debug && ./api --frontend-dist ../../../frontend/dist --port 8081",
       port: 8081,
     },
   ],
