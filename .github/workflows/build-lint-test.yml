@@ -53,7 +53,7 @@ jobs:
         with:
           name: backend-build
           path: backend/target/debug/api
-      - name: Output artifact ID
+      - name: Output build artifact ID
         run:  echo 'Artifact ID is ${{ steps.artifact-upload-step.outputs.artifact-id }}'
   frontend:
     name: Frontend
@@ -82,7 +82,7 @@ jobs:
         with:
           name: frontend-build
           path: frontend/dist
-      - name: Output artifact ID
+      - name: Output build artifact ID
         run:  echo 'Artifact ID is ${{ steps.artifact-upload-step.outputs.artifact-id }}'
   playwright:
     name: Playwright
@@ -103,6 +103,8 @@ jobs:
         run: npm ci
       - name: e2e test install
         run: npx playwright install --with-deps
+      - name: display current GH workspace
+        run: echo $GITHUB_WORKSPACE
       - name: Download frontend-build
         uses: actions/download-artifact@v4
         with:
@@ -111,9 +113,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: backend-build
-          pathend: to-here
+          path: to-here
       - name: Display structure of downloaded files
-        run: ls -R
+        run: ls ..
       # - name: e2e test - lib ui
       #   run: npm run e2e:lib-ui
       # - name: e2e test - app
