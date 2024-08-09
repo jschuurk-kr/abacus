@@ -34,10 +34,10 @@ jobs:
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-
-      # - name: Install sqlx-cli
-      #   run: cargo install sqlx-cli --no-default-features --features sqlite
-      # - name: Create database and run migrations
-      #   run: sqlx database setup
+      - name: Install sqlx-cli
+        run: cargo install sqlx-cli --no-default-features --features sqlite
+      - name: Create database and run migrations
+        run: sqlx database setup
       # - name: Check rustfmt
       #   run: cargo --verbose --locked fmt --all -- --check
       # - name: Check Clippy with all features
