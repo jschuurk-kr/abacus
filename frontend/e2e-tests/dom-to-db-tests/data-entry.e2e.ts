@@ -21,6 +21,7 @@ test.describe("Data entry", () => {
     await recountedPage.no.check();
     await expect(recountedPage.no).toBeChecked();
     await recountedPage.next.click();
+    await recountedPage.votersAndVotes.click();
 
     await expect(recountedPage.error).toBeHidden();
     await expect(recountedPage.warning).toBeHidden();
