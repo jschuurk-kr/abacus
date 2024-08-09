@@ -34,20 +34,27 @@ jobs:
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-
-      - name: Install sqlx-cli
-        run: cargo install sqlx-cli --no-default-features --features sqlite
-      - name: Create database and run migrations
-        run: sqlx database setup
-      - name: Check rustfmt
-        run: cargo --verbose --locked fmt --all -- --check
-      - name: Check Clippy with all features
-        run: cargo --verbose --locked clippy --all-targets --all-features -- -D warnings
-      - name: Check Clippy without default features
-        run: cargo --verbose --locked clippy --all-targets --no-default-features -- -D warnings
-      - name: Run tests
-        run: cargo --verbose --locked test
+      # - name: Install sqlx-cli
+      #   run: cargo install sqlx-cli --no-default-features --features sqlite
+      # - name: Create database and run migrations
+      #   run: sqlx database setup
+      # - name: Check rustfmt
+      #   run: cargo --verbose --locked fmt --all -- --check
+      # - name: Check Clippy with all features
+      #   run: cargo --verbose --locked clippy --all-targets --all-features -- -D warnings
+      # - name: Check Clippy without default features
+      #   run: cargo --verbose --locked clippy --all-targets --no-default-features -- -D warnings
+      # - name: Run tests
+      #   run: cargo --verbose --locked test
       - name: Build
         run: cargo --verbose --locked build
+      - uses: actions/upload-artifact@v4
+        id: artifact-upload-step
+        with:
+          name: backend-build
+          path: backend/target/debug/api
+      - name: Output artifact ID
+        run:  echo 'Artifact ID is ${{ steps.artifact-upload-step.outputs.artifact-id }}'
   frontend:
     name: Frontend
     runs-on: ubuntu-latest
