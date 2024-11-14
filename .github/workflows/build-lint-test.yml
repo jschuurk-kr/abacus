@@ -1,7 +1,12 @@
 name: Build, lint & test
 
-# modules-2e535ebdc9dc6f1dda0e9b7792146f19d2b11e550f9aad8eaf41f7c21fcfb42c
-# modules-2e535ebdc9dc6f1dda0e9b7792146f19d2b11e550f9aad8eaf41f7c21fcfb42c
+# TODO
+# - check for cache instead of restoring it -> https://github.com/actions/cache/tree/v4/
+# - decide on fail-on-cache-miss etc
+# - sharding: https://timdeschryver.dev/blog/using-playwright-test-shards-in-combination-with-a-job-matrix-to-improve-your-ci-speed#github-workflow-caching
+
+# latest run, has failures
+# https://github.com/jschuurk-kr/abacus/actions/runs/11841536605
 
 on:
   workflow_dispatch:
