@@ -87,6 +87,7 @@ jobs:
   #       with:
   #         name: frontend-build
   #         path: frontend/dist
+
   playwright-install:
     name: Playwright install
     runs-on: ubuntu-latest
@@ -127,7 +128,7 @@ jobs:
   playwright-ui:
     name: Playwright UI tests
     needs:
-      - backend # frontend is included in backend build
+      - playwright-install
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -155,9 +156,9 @@ jobs:
         run: npm run e2e:lib-ui
         
   playwright-app:
-    name: Playwright UI tests
+    name: Playwright app tests
     needs:
-      - backend # frontend is included in backend build
+      - playwright-install
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -188,6 +189,7 @@ jobs:
   playwright-d2d:
     name: Playwright d2d tests
     needs:
+      - playwright-install
       - backend # frontend is included in backend build
     runs-on: ubuntu-latest
     defaults:
