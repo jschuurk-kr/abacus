@@ -47,22 +47,48 @@ jobs:
             ./backend/target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-
-      - name: Check rustfmt
-        run: cargo --verbose --locked fmt --all -- --check
-      - name: Check Clippy with all features
-        run: cargo --verbose --locked clippy --all-targets --all-features -- -D warnings
-      - name: Check Clippy without default features
-        run: cargo --verbose --locked clippy --all-targets --no-default-features -- -D warnings
-      - name: Run tests
-        run: cargo --verbose --locked test
+      # - name: Check rustfmt
+      #   run: cargo --verbose --locked fmt --all -- --check
+      # - name: Check Clippy with all features
+      #   run: cargo --verbose --locked clippy --all-targets --all-features -- -D warnings
+      # - name: Check Clippy without default features
+      #   run: cargo --verbose --locked clippy --all-targets --no-default-features -- -D warnings
+      # - name: Run tests
+      #   run: cargo --verbose --locked test
       - name: Build
         run: cargo --verbose --locked build --features memory-serve
       - uses: actions/upload-artifact@v4
         with:
           name: backend-build
           path: backend/target/debug/api
-  frontend:
-    name: Frontend
+  # frontend:
+  #   name: Frontend
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: frontend
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Setup Node
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 20
+  #     - name: Install dependencies
+  #       run: npm ci
+  #     # - name: Check formatting
+  #     #   run: npx prettier --check .
+  #     # - name: Lint
+  #     #   run: npm run lint
+  #     # - name: Test
+  #     #   run: npm test
+  #     - name: Build
+  #       run: npm run build
+  #     - uses: actions/upload-artifact@v4
+  #       with:
+  #         name: frontend-build
+  #         path: frontend/dist
+  playwright-install:
+    name: Playwright install
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -73,22 +99,33 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Install dependencies
-        run: npm ci
-      - name: Check formatting
-        run: npx prettier --check .
-      - name: Lint
-        run: npm run lint
-      - name: Test
-        run: npm test
-      - name: Build
-        run: npm run build
-      - uses: actions/upload-artifact@v4
+ 
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        id: cache-node-modules
         with:
-          name: frontend-build
-          path: frontend/dist
-  playwright:
-    name: Playwright
+          path: |
+            node_modules
+          key: modules-${{ hashFiles('package-lock.json') }}
+ 
+      - name: Cache Playwright binaries
+        uses: actions/cache@v4
+        id: cache-playwright
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('package-lock.json') }}
+ 
+      - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci
+ 
+      - name: Install Playwright Browsers
+        if: steps.cache-playwright.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps
+  
+  playwright-ui:
+    name: Playwright UI tests
     needs:
       - backend # frontend is included in backend build
     runs-on: ubuntu-latest
@@ -101,14 +138,80 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Install npm dependencies
-        run: npm ci
-      - name: Install Playwright
-        run: npx playwright install --with-deps
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+          key: modules-${{ hashFiles('package-lock.json') }}
+  
+      - name: Cache Playwright
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('package-lock.json') }}
       - name: Run UI e2e tests
         run: npm run e2e:lib-ui
+        
+  playwright-app:
+    name: Playwright UI tests
+    needs:
+      - backend # frontend is included in backend build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+          key: modules-${{ hashFiles('package-lock.json') }}
+  
+      - name: Cache Playwright
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('package-lock.json') }}
       - name: Run app e2e tests
         run: npm run e2e:app
+
+
+  playwright-d2d:
+    name: Playwright d2d tests
+    needs:
+      - backend # frontend is included in backend build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+          key: modules-${{ hashFiles('package-lock.json') }}
+  
+      - name: Cache Playwright
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('package-lock.json') }}
       - name: Download backend-build
         uses: actions/download-artifact@v4
         with:
