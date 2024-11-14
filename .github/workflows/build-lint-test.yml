@@ -1,5 +1,8 @@
 name: Build, lint & test
 
+# modules-2e535ebdc9dc6f1dda0e9b7792146f19d2b11e550f9aad8eaf41f7c21fcfb42c
+# modules-2e535ebdc9dc6f1dda0e9b7792146f19d2b11e550f9aad8eaf41f7c21fcfb42c
+
 on:
   workflow_dispatch:
   pull_request:
@@ -106,7 +109,7 @@ jobs:
         id: cache-node-modules
         with:
           path: |
-            node_modules
+            frontend/node_modules
           key: modules-${{ hashFiles('frontend/package-lock.json') }}
  
       - name: Cache Playwright binaries
@@ -143,7 +146,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: |
-            node_modules
+            frontend/node_modules
           key: modules-${{ hashFiles('frontend/package-lock.json') }}
   
       - name: Cache Playwright
@@ -173,7 +176,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: |
-            node_modules
+            frontend/node_modules
           key: modules-${{ hashFiles('package-lock.json') }}
   
       - name: Cache Playwright
@@ -205,7 +208,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: |
-            node_modules
+            frontend/node_modules
           key: modules-${{ hashFiles('package-lock.json') }}
   
       - name: Cache Playwright
