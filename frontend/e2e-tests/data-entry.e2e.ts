@@ -58,6 +58,8 @@ test.describe("full data entry flow", () => {
 
     const differencesPage = new DifferencesPage(page);
     await expect(differencesPage.moreBallotsCount).toBeFocused();
+    // fail on purpose
+    await expect(recountedPage.no).toBeChecked();
     await differencesPage.next.click();
 
     const candidatesListPage_1 = new CandidatesListPage(page, "Lijst 1 - Political Group A");
