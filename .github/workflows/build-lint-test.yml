@@ -178,9 +178,6 @@ jobs:
 
   playwright-e2e:
     name: Playwright e2e tests (${{ matrix.shardIndex }}/${{ matrix.shardTotal }})
-    env:
-      # TODO
-      PLAYWRIGHT_VERSION: v1.58.2
     needs:
       - build
     strategy:
@@ -188,9 +185,9 @@ jobs:
         shardIndex: [1, 2, 3]
         shardTotal: [3]
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.58.2-noble
-      options: --user 1001
+    # container:
+    #   image: mcr.microsoft.com/playwright:v1.58.2-noble
+    #   options: --user 1001
     defaults:
       run:
         working-directory: frontend

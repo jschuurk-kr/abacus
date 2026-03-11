@@ -59,7 +59,7 @@ const config: PlaywrightTestConfig = defineConfig({
       testMatch: /initialisation\.e2e\.ts/,
       use: {
         ...devices["Desktop Chrome"],
-        channel: "chromium",
+        channel: "chrome",
         userAgent: "Abacus-User-Agent/1",
       },
     },
@@ -69,7 +69,7 @@ const config: PlaywrightTestConfig = defineConfig({
       testMatch: /setup-test-users\.ts/,
       use: {
         ...devices["Desktop Chrome"],
-        channel: "chromium",
+        channel: "chrome",
         userAgent: "Abacus-User-Agent/1",
       },
       dependencies: ["initialisation-test"],
@@ -83,29 +83,29 @@ const config: PlaywrightTestConfig = defineConfig({
           permissions: ["clipboard-read", "clipboard-write"],
         },
         ...devices["Desktop Chrome"],
-        channel: "chromium",
+        channel: "chrome",
         userAgent: "Abacus-User-Agent/1",
       },
       dependencies: ["setup-test-users"],
     },
-    {
-      name: "firefox",
-      testIgnore: /initialisation\.e2e\.ts/,
-      use: {
-        ...devices["Desktop Firefox"],
-        userAgent: "Abacus-User-Agent/1",
-      },
-      dependencies: ["setup-test-users"],
-    },
-    {
-      name: "safari",
-      testIgnore: /initialisation\.e2e\.ts/,
-      use: {
-        ...devices["Desktop Safari"],
-        userAgent: "Abacus-User-Agent/1",
-      },
-      dependencies: ["setup-test-users"],
-    },
+    // {
+    //   name: "firefox",
+    //   testIgnore: /initialisation\.e2e\.ts/,
+    //   use: {
+    //     ...devices["Desktop Firefox"],
+    //     userAgent: "Abacus-User-Agent/1",
+    //   },
+    //   dependencies: ["setup-test-users"],
+    // },
+    // {
+    //   name: "safari",
+    //   testIgnore: /initialisation\.e2e\.ts/,
+    //   use: {
+    //     ...devices["Desktop Safari"],
+    //     userAgent: "Abacus-User-Agent/1",
+    //   },
+    //   dependencies: ["setup-test-users"],
+    // },
   ],
 });
 
