@@ -179,6 +179,7 @@ jobs:
   playwright-e2e:
     name: Playwright e2e tests (${{ matrix.shardIndex }}/${{ matrix.shardTotal }})
     env:
+      # TODO
       PLAYWRIGHT_VERSION: v1.58.2
     needs:
       - build
@@ -188,7 +189,7 @@ jobs:
         shardTotal: [3]
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:$PLAYWRIGHT_VERSION-noble
+      image: mcr.microsoft.com/playwright:v1.58.2-noble
       options: --user 1001
     defaults:
       run:
@@ -206,7 +207,7 @@ jobs:
           corepack enable &&
           corepack prepare pnpm@latest-10 --activate
       - name: Install dependencies
-        run: pnpm install --save-dev @playwright/test@$PLAYWRIGHT_VERSION
+        run: pnpm install --save-dev @playwright/test@v1.58.2
       # - name: Install Playwright Browsers
       #   run: pnpm playwright install --with-deps --no-shell
       - name: Download Abacus
