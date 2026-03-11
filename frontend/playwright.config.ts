@@ -88,24 +88,24 @@ const config: PlaywrightTestConfig = defineConfig({
       },
       dependencies: ["setup-test-users"],
     },
-    // {
-    //   name: "firefox",
-    //   testIgnore: /initialisation\.e2e\.ts/,
-    //   use: {
-    //     ...devices["Desktop Firefox"],
-    //     userAgent: "Abacus-User-Agent/1",
-    //   },
-    //   dependencies: ["setup-test-users"],
-    // },
-    // {
-    //   name: "safari",
-    //   testIgnore: /initialisation\.e2e\.ts/,
-    //   use: {
-    //     ...devices["Desktop Safari"],
-    //     userAgent: "Abacus-User-Agent/1",
-    //   },
-    //   dependencies: ["setup-test-users"],
-    // },
+    {
+      name: "firefox",
+      testIgnore: /initialisation\.e2e\.ts/,
+      use: {
+        ...devices["Desktop Firefox"],
+        userAgent: "Abacus-User-Agent/1",
+      },
+      dependencies: ["setup-test-users"],
+    },
+    {
+      name: "safari",
+      testIgnore: /initialisation\.e2e\.ts/,
+      use: {
+        ...devices["Desktop Safari"],
+        userAgent: "Abacus-User-Agent/1",
+      },
+      dependencies: ["setup-test-users"],
+    },
   ],
 });
 
