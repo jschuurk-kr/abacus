@@ -207,7 +207,7 @@ jobs:
           corepack enable &&
           corepack prepare pnpm@latest-10 --activate
       - name: Install dependencies
-        run: pnpm install --save-dev @playwright/test@v1.58.2
+        run: pnpm install
       # - name: Install Playwright Browsers
       #   run: pnpm playwright install --with-deps --no-shell
       - name: Download Abacus
