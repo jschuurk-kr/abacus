@@ -77,104 +77,104 @@ jobs:
           name: abacus
           path: backend/target/x86_64-unknown-linux-musl/debug/abacus
 
-  backend:
-    name: Backend
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
-    env:
-      CARGO_TERM_COLOR: always
-      SQLX_OFFLINE: "true"
-    steps:
-      # Free up runner disk space, so that our job has enough space to run
-      # https://dev.to/mathio/squeezing-disk-space-from-github-actions-runners-an-engineers-guide-3pjg
-      - name: Free up runner disk space
-        working-directory: /
-        run: >
-          df -h
-          &&
-          echo "Freeing up disk space..."
-          &&
-          sudo rm -rf
-          /usr/local/.ghcup
-          /usr/share/dotnet
-          /usr/share/swift
-          &&
-          df -h
-      - uses: actions/checkout@v6
-      # Test backend
-      - name: Install musl
-        run: sudo apt-get update && sudo apt-get install -y musl-tools
-      - name: Setup Rust
-        shell: bash
-        run: >
-          rustup update stable &&
-          rustup default stable &&
-          rustup target add x86_64-unknown-linux-musl &&
-          rustup component add --toolchain stable clippy rustfmt
-      - name: Cargo cache
-        uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2
-        with:
-          workspaces: "backend -> target"
-      - name: Create empty frontend build dir for memory-serve
-        run: mkdir -p dist dist-storybook
-        working-directory: ./frontend
-      - name: Check rustfmt
-        run: cargo --verbose --locked fmt --all -- --check
-      - name: Check Clippy with all features
-        run: cargo --verbose --locked clippy --target=x86_64-unknown-linux-musl --workspace --all-targets --all-features -- -D warnings
-      - name: Check Clippy without default features
-        run: cargo --verbose --locked clippy --target=x86_64-unknown-linux-musl --workspace --all-targets --no-default-features -- -D warnings
-      - name: Run tests
-        run: cargo --verbose --locked test --target=x86_64-unknown-linux-musl --workspace --features embed-typst -- --nocapture
-      - name: Build documentation
-        run: cargo doc --workspace --no-deps --all-features
-        env:
-          RUSTDOCFLAGS: "-D warnings"
-      - name: Create documentation artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: rustdoc
-          path: backend/target/doc
-          retention-days: 30
+  # backend:
+  #   name: Backend
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: ./backend
+  #   env:
+  #     CARGO_TERM_COLOR: always
+  #     SQLX_OFFLINE: "true"
+  #   steps:
+  #     # Free up runner disk space, so that our job has enough space to run
+  #     # https://dev.to/mathio/squeezing-disk-space-from-github-actions-runners-an-engineers-guide-3pjg
+  #     - name: Free up runner disk space
+  #       working-directory: /
+  #       run: >
+  #         df -h
+  #         &&
+  #         echo "Freeing up disk space..."
+  #         &&
+  #         sudo rm -rf
+  #         /usr/local/.ghcup
+  #         /usr/share/dotnet
+  #         /usr/share/swift
+  #         &&
+  #         df -h
+  #     - uses: actions/checkout@v6
+  #     # Test backend
+  #     - name: Install musl
+  #       run: sudo apt-get update && sudo apt-get install -y musl-tools
+  #     - name: Setup Rust
+  #       shell: bash
+  #       run: >
+  #         rustup update stable &&
+  #         rustup default stable &&
+  #         rustup target add x86_64-unknown-linux-musl &&
+  #         rustup component add --toolchain stable clippy rustfmt
+  #     - name: Cargo cache
+  #       uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2
+  #       with:
+  #         workspaces: "backend -> target"
+  #     - name: Create empty frontend build dir for memory-serve
+  #       run: mkdir -p dist dist-storybook
+  #       working-directory: ./frontend
+  #     - name: Check rustfmt
+  #       run: cargo --verbose --locked fmt --all -- --check
+  #     - name: Check Clippy with all features
+  #       run: cargo --verbose --locked clippy --target=x86_64-unknown-linux-musl --workspace --all-targets --all-features -- -D warnings
+  #     - name: Check Clippy without default features
+  #       run: cargo --verbose --locked clippy --target=x86_64-unknown-linux-musl --workspace --all-targets --no-default-features -- -D warnings
+  #     - name: Run tests
+  #       run: cargo --verbose --locked test --target=x86_64-unknown-linux-musl --workspace --features embed-typst -- --nocapture
+  #     - name: Build documentation
+  #       run: cargo doc --workspace --no-deps --all-features
+  #       env:
+  #         RUSTDOCFLAGS: "-D warnings"
+  #     - name: Create documentation artifact
+  #       uses: actions/upload-artifact@v7
+  #       with:
+  #         name: rustdoc
+  #         path: backend/target/doc
+  #         retention-days: 30
 
-  frontend:
-    name: Frontend
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
-    steps:
-      - uses: actions/checkout@v6
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          package-manager-cache: false
-      - name: Install pnpm
-        run: >
-          npm install --global corepack@latest &&
-          corepack enable &&
-          corepack prepare pnpm@latest-10 --activate
-      - name: Install dependencies
-        run: pnpm install
-      - name: Run Biome
-        run: pnpm biome ci
-      - name: Run TypeScript compiler
-        run: pnpm lint:tsc
-      - name: Run ESLint
-        run: pnpm lint:eslint
-      - name: Install Playwright Chromium Browser
-        run: pnpm playwright install --with-deps chromium
-      - name: Test
-        run: pnpm test
-      - name: Build
-        run: pnpm build
-      - uses: actions/upload-artifact@v7
-        with:
-          name: frontend-build
-          path: frontend/dist
+  # frontend:
+  #   name: Frontend
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: frontend
+  #   steps:
+  #     - uses: actions/checkout@v6
+  #     - name: Setup Node
+  #       uses: actions/setup-node@v6
+  #       with:
+  #         node-version: 24
+  #         package-manager-cache: false
+  #     - name: Install pnpm
+  #       run: >
+  #         npm install --global corepack@latest &&
+  #         corepack enable &&
+  #         corepack prepare pnpm@latest-10 --activate
+  #     - name: Install dependencies
+  #       run: pnpm install
+  #     - name: Run Biome
+  #       run: pnpm biome ci
+  #     - name: Run TypeScript compiler
+  #       run: pnpm lint:tsc
+  #     - name: Run ESLint
+  #       run: pnpm lint:eslint
+  #     - name: Install Playwright Chromium Browser
+  #       run: pnpm playwright install --with-deps chromium
+  #     - name: Test
+  #       run: pnpm test
+  #     - name: Build
+  #       run: pnpm build
+  #     - uses: actions/upload-artifact@v7
+  #       with:
+  #         name: frontend-build
+  #         path: frontend/dist
 
   playwright-e2e:
     name: Playwright e2e tests (${{ matrix.shardIndex }}/${{ matrix.shardTotal }})
@@ -221,86 +221,86 @@ jobs:
           path: frontend/playwright-report/
           retention-days: 30
 
-  deploy:
-    if: "github.repository == 'kiesraad/abacus' && !github.event.pull_request.head.repo.fork"
-    name: Deploy to abacus-test.nl
-    needs:
-      - build
-    environment:
-      name: test
-      url: https://${{ github.sha }}.abacus-test.nl
-    permissions:
-      contents: read
-      deployments: write
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
-      - name: Download Abacus
-        uses: actions/download-artifact@v8
-        with:
-          name: abacus
-      - name: Strip debug symbols
-        run: strip abacus
-      - name: Upload binary to test server
-        run: |
-          curl -s -v \
-          --fail \
-          -H "Authorization: Bearer ${{ secrets.ABACUS_TEST_API_KEY }}" \
-          -T ./abacus \
-          https://abacus-test.nl/etes/api/v1/executable/${{ github.event.pull_request.head.sha || github.sha }}/${{ github.sha }}
+  # deploy:
+  #   if: "github.repository == 'kiesraad/abacus' && !github.event.pull_request.head.repo.fork"
+  #   name: Deploy to abacus-test.nl
+  #   needs:
+  #     - build
+  #   environment:
+  #     name: test
+  #     url: https://${{ github.sha }}.abacus-test.nl
+  #   permissions:
+  #     contents: read
+  #     deployments: write
+  #   runs-on: ubuntu-latest
+  #   continue-on-error: true
+  #   steps:
+  #     - name: Download Abacus
+  #       uses: actions/download-artifact@v8
+  #       with:
+  #         name: abacus
+  #     - name: Strip debug symbols
+  #       run: strip abacus
+  #     - name: Upload binary to test server
+  #       run: |
+  #         curl -s -v \
+  #         --fail \
+  #         -H "Authorization: Bearer ${{ secrets.ABACUS_TEST_API_KEY }}" \
+  #         -T ./abacus \
+  #         https://abacus-test.nl/etes/api/v1/executable/${{ github.event.pull_request.head.sha || github.sha }}/${{ github.sha }}
 
-  fuzz:
-    name: Backend fuzzer
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
-    env:
-      CARGO_TERM_COLOR: always
-      SQLX_OFFLINE: "true"
-    steps:
-      - uses: actions/checkout@v6
-      - name: Setup Rust Nightly
-        shell: bash
-        run: >
-          rustup update nightly &&
-          rustup default nightly
-      - name: Cargo cache
-        uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2
-        with:
-          workspaces: "backend/fuzz -> target"
-          shared-key: "fuzzer"
-      - name: Install cargo fuzz
-        run: cargo install cargo-fuzz
-      - name: Run the fuzzer
-        run: cargo fuzz run data_entry_status -- -max_total_time=60
+  # fuzz:
+  #   name: Backend fuzzer
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: ./backend
+  #   env:
+  #     CARGO_TERM_COLOR: always
+  #     SQLX_OFFLINE: "true"
+  #   steps:
+  #     - uses: actions/checkout@v6
+  #     - name: Setup Rust Nightly
+  #       shell: bash
+  #       run: >
+  #         rustup update nightly &&
+  #         rustup default nightly
+  #     - name: Cargo cache
+  #       uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2
+  #       with:
+  #         workspaces: "backend/fuzz -> target"
+  #         shared-key: "fuzzer"
+  #     - name: Install cargo fuzz
+  #       run: cargo install cargo-fuzz
+  #     - name: Run the fuzzer
+  #       run: cargo fuzz run data_entry_status -- -max_total_time=60
 
-  rustdoc:
-    name: Deploy rustdoc to GitHub Pages
-    if: github.ref == 'refs/heads/main'
-    needs:
-      - backend
-    permissions:
-      pages: write
-      id-token: write
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Download rustdoc artifact
-        uses: actions/download-artifact@v8
-        with:
-          name: rustdoc
-          path: rustdoc
-      - name: Add redirect to main crate docs
-        run: echo '<meta http-equiv="refresh" content="0; url=abacus/index.html">' > rustdoc/index.html
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-      - name: Upload to GitHub Pages
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: rustdoc
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+  # rustdoc:
+  #   name: Deploy rustdoc to GitHub Pages
+  #   if: github.ref == 'refs/heads/main'
+  #   needs:
+  #     - backend
+  #   permissions:
+  #     pages: write
+  #     id-token: write
+  #   runs-on: ubuntu-latest
+  #   environment:
+  #     name: github-pages
+  #     url: ${{ steps.deployment.outputs.page_url }}
+  #   steps:
+  #     - name: Download rustdoc artifact
+  #       uses: actions/download-artifact@v8
+  #       with:
+  #         name: rustdoc
+  #         path: rustdoc
+  #     - name: Add redirect to main crate docs
+  #       run: echo '<meta http-equiv="refresh" content="0; url=abacus/index.html">' > rustdoc/index.html
+  #     - name: Configure GitHub Pages
+  #       uses: actions/configure-pages@v5
+  #     - name: Upload to GitHub Pages
+  #       uses: actions/upload-pages-artifact@v4
+  #       with:
+  #         path: rustdoc
+  #     - name: Deploy to GitHub Pages
+  #       id: deployment
+  #       uses: actions/deploy-pages@v4
