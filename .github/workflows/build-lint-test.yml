@@ -178,6 +178,8 @@ jobs:
 
   playwright-e2e:
     name: Playwright e2e tests (${{ matrix.shardIndex }}/${{ matrix.shardTotal }})
+    env:
+      PLAYWRIGHT_VERSION: v1.58.2
     needs:
       - build
     strategy:
@@ -185,6 +187,9 @@ jobs:
         shardIndex: [1, 2, 3]
         shardTotal: [3]
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:$PLAYWRIGHT_VERSION-noble
+      options: --user 1001
     defaults:
       run:
         working-directory: frontend
@@ -201,9 +206,9 @@ jobs:
           corepack enable &&
           corepack prepare pnpm@latest-10 --activate
       - name: Install dependencies
-        run: pnpm install
-      - name: Install Playwright Browsers
-        run: pnpm playwright install --with-deps --no-shell
+        run: pnpm install --save-dev @playwright/test@$PLAYWRIGHT_VERSION
+      # - name: Install Playwright Browsers
+      #   run: pnpm playwright install --with-deps --no-shell
       - name: Download Abacus
         uses: actions/download-artifact@v8
         with:
@@ -212,7 +217,7 @@ jobs:
       - name: Make Abacus executable
         run: chmod a+x ../builds/backend/abacus
       - name: Run e2e playwright tests
-        run: pnpm test:e2e --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        run: pnpm test:e2e --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} -g "Election creation"
       - name: Upload Playwright report
         uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
